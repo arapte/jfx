@@ -78,7 +78,7 @@ public class TextAreaTest {
      ********************************************************************/
 
     @Test public void defaultConstructorShouldHaveEmptyString() {
-        assertEquals("", txtArea.getText());
+        assertEquals("Rish", txtArea.getText());
     }
 
     @Test public void oneStrArgConstructorShouldHaveString() {
