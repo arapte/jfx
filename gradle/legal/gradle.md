@@ -1,4 +1,4 @@
-## Gradle v7.6
+## Gradle v8.3
 
 ### Gradle Notice
 ```
