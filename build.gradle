@@ -2808,7 +2808,7 @@ project(":controls") {
     }
 
     test {
-        def cssDir = file("$buildDir/classes/java/main/${moduleName}/javafx")
+        def cssDir = file("${TEST_JAVAFX_SDK_PATH}/shims/${moduleName}/javafx")
         jvmArgs enableNativeGraphics
         jvmArgs "-Djavafx.toolkit=test.com.sun.javafx.pgstub.StubToolkit",
             "-DCSS_META_DATA_TEST_DIR=$cssDir"
