@@ -79,6 +79,8 @@ jobs:
         set +o allexport
 
       BOOT_JDK_VERSION: "${BOOTJDK_MINOR_RELEASE}"
+      run: echo "Today's date is $BOOT_JDK_VERSION"
+      run: echo "Today's date is ${BOOTJDK_MINOR_RELEASE}"
       BOOT_JDK_FILENAME: "jdk-${BOOTJDK_MINOR_RELEASE}_linux-x64_bin.tar.gz"
       BOOT_JDK_URL: "https://download.oracle.com/java/${BOOTJDK_MAJOR_RELEASE}/archive/jdk-${BOOTJDK_MINOR_RELEASE}_linux-x64_bin.tar.gz"
       ANT_DIR: "apache-ant-1.10.5"
