@@ -73,9 +73,14 @@ jobs:
       # BOOT_JDK_FILENAME: "${{ fromJson(needs.prerequisites.outputs.dependencies).LINUX_X64_BOOT_JDK_FILENAME }}"
       # BOOT_JDK_URL: "${{ fromJson(needs.prerequisites.outputs.dependencies).LINUX_X64_BOOT_JDK_URL }}"
       # BOOT_JDK_SHA256: "${{ fromJson(needs.prerequisites.outputs.dependencies).LINUX_X64_BOOT_JDK_SHA256 }}"
-      BOOT_JDK_VERSION: "22.0.2"
-      BOOT_JDK_FILENAME: "jdk-22.0.2_linux-x64_bin.tar.gz"
-      BOOT_JDK_URL: "https://download.oracle.com/java/22/archive/jdk-22.0.2_linux-x64_bin.tar.gz"
+      run: |
+        set -o allexport
+        source .env
+        set +o allexport
+
+      BOOT_JDK_VERSION: "${BOOTJDK_MINOR_RELEASE}"
+      BOOT_JDK_FILENAME: "jdk-${BOOTJDK_MINOR_RELEASE}_linux-x64_bin.tar.gz"
+      BOOT_JDK_URL: "https://download.oracle.com/java/${BOOTJDK_MAJOR_RELEASE}/archive/jdk-${BOOTJDK_MINOR_RELEASE}_linux-x64_bin.tar.gz"
       ANT_DIR: "apache-ant-1.10.5"
       ANT_FILENAME: "apache-ant-1.10.5.tar.gz"
       ANT_URL: "https://archive.apache.org/dist/ant/binaries/apache-ant-1.10.5-bin.tar.gz"
@@ -155,9 +160,14 @@ jobs:
       # BOOT_JDK_FILENAME: "${{ fromJson(needs.prerequisites.outputs.dependencies).LINUX_X64_BOOT_JDK_FILENAME }}"
       # BOOT_JDK_URL: "${{ fromJson(needs.prerequisites.outputs.dependencies).LINUX_X64_BOOT_JDK_URL }}"
       # BOOT_JDK_SHA256: "${{ fromJson(needs.prerequisites.outputs.dependencies).LINUX_X64_BOOT_JDK_SHA256 }}"
-      BOOT_JDK_VERSION: "22.0.2"
-      BOOT_JDK_FILENAME: "jdk-22.0.2_macos-x64_bin.tar.gz"
-      BOOT_JDK_URL: "https://download.oracle.com/java/22/archive/jdk-22.0.2_macos-x64_bin.tar.gz"
+      run: |
+        set -o allexport
+        source .env
+        set +o allexport
+
+      BOOT_JDK_VERSION: "${BOOTJDK_MINOR_RELEASE}"
+      BOOT_JDK_FILENAME: "jdk-${BOOTJDK_MINOR_RELEASE}_macos-x64_bin.tar.gz"
+      BOOT_JDK_URL: "https://download.oracle.com/java/${BOOTJDK_MAJOR_RELEASE}/archive/jdk-${BOOTJDK_MINOR_RELEASE}_macos-x64_bin.tar.gz"
       # Disabled due to timeout downloading ant; use ant installed on system
       #ANT_DIR: "apache-ant-1.10.5"
       #ANT_FILENAME: "apache-ant-1.10.5.tar.gz"
@@ -241,9 +251,14 @@ jobs:
       # BOOT_JDK_FILENAME: "${{ fromJson(needs.prerequisites.outputs.dependencies).LINUX_X64_BOOT_JDK_FILENAME }}"
       # BOOT_JDK_URL: "${{ fromJson(needs.prerequisites.outputs.dependencies).LINUX_X64_BOOT_JDK_URL }}"
       # BOOT_JDK_SHA256: "${{ fromJson(needs.prerequisites.outputs.dependencies).LINUX_X64_BOOT_JDK_SHA256 }}"
-      BOOT_JDK_VERSION: "22.0.2"
-      BOOT_JDK_FILENAME: "jdk-22.0.2_macos-aarch64_bin.tar.gz"
-      BOOT_JDK_URL: "https://download.oracle.com/java/22/archive/jdk-22.0.2_macos-aarch64_bin.tar.gz"
+      run: |
+        set -o allexport
+        source .env
+        set +o allexport
+
+      BOOT_JDK_VERSION: "${BOOTJDK_MINOR_RELEASE}"
+      BOOT_JDK_FILENAME: "jdk-${BOOTJDK_MINOR_RELEASE}_macos-aarch64_bin.tar.gz"
+      BOOT_JDK_URL: "https://download.oracle.com/java/${BOOTJDK_MAJOR_RELEASE}/archive/jdk-${BOOTJDK_MINOR_RELEASE}_macos-aarch64_bin.tar.gz"
       # Disabled due to timeout downloading ant; use ant installed on system
       #ANT_DIR: "apache-ant-1.10.5"
       #ANT_FILENAME: "apache-ant-1.10.5.tar.gz"
@@ -327,9 +342,14 @@ jobs:
       # BOOT_JDK_FILENAME: "${{ fromJson(needs.prerequisites.outputs.dependencies).LINUX_X64_BOOT_JDK_FILENAME }}"
       # BOOT_JDK_URL: "${{ fromJson(needs.prerequisites.outputs.dependencies).LINUX_X64_BOOT_JDK_URL }}"
       # BOOT_JDK_SHA256: "${{ fromJson(needs.prerequisites.outputs.dependencies).LINUX_X64_BOOT_JDK_SHA256 }}"
-      BOOT_JDK_VERSION: "22.0.2"
-      BOOT_JDK_FILENAME: "jdk-22.0.2_windows-x64_bin.zip"
-      BOOT_JDK_URL: "https://download.oracle.com/java/22/archive/jdk-22.0.2_windows-x64_bin.zip"
+      run: |
+        set -o allexport
+        source .env
+        set +o allexport
+
+      BOOT_JDK_VERSION: "${BOOTJDK_MINOR_RELEASE}"
+      BOOT_JDK_FILENAME: "jdk-${BOOTJDK_MINOR_RELEASE}_windows-x64_bin.zip"
+      BOOT_JDK_URL: "https://download.oracle.com/java/${BOOTJDK_MAJOR_RELEASE}/archive/jdk-${BOOTJDK_MINOR_RELEASE}_windows-x64_bin.zip"
       ANT_DIR: "apache-ant-1.10.5"
       ANT_FILENAME: "apache-ant-1.10.5.tar.gz"
       ANT_URL: "https://archive.apache.org/dist/ant/binaries/apache-ant-1.10.5-bin.tar.gz"
