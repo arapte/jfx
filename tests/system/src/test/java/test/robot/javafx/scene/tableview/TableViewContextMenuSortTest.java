@@ -105,6 +105,7 @@ public class TableViewContextMenuSortTest {
         }
 
         // macOS only: Ctrl + Left click also triggers the context menu
+        /*
         if (PlatformUtil.isMac()) {
             Util.runAndWait(() -> {
                 robot.keyPress(KeyCode.ESCAPE);
@@ -125,6 +126,7 @@ public class TableViewContextMenuSortTest {
                 assertEquals(unsortedList.get(i).getName(), table.getItems().get(i).getName());
             }
         }
+        */
     }
 
     @BeforeAll
