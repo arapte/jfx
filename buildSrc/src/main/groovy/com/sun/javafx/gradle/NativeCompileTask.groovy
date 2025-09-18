@@ -31,6 +31,11 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.util.PatternFilterable
 import org.gradle.api.tasks.util.PatternSet
+import org.gradle.process.ExecSpec
+import org.gradle.api.Action
+import org.gradle.process.ExecOperations
+
+import javax.inject.Inject
 
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CountDownLatch
@@ -45,6 +50,13 @@ class NativeCompileTask extends DefaultTask {
     @OutputDirectory File output;
     @InputFiles List<File> allFiles = [];
     private final PatternFilterable patternSet = new PatternSet();
+
+    private final ExecOperations execOperations
+
+    @Inject
+    NativeCompileTask(ExecOperations execOperations) {
+        this.execOperations = execOperations
+    }
 
     public NativeCompileTask source(Object... sources) {
         for (Object source : sources) {
@@ -77,6 +89,13 @@ class NativeCompileTask extends DefaultTask {
                 allFiles += file.isDirectory() ? file.listFiles() : file;
             }
         }
+    }
+
+    /**
+     * Replacement for project.exec – subclasses should call this.
+     */
+    protected void execCompile(Action<ExecSpec> action) {
+        execOperations.exec(action)
     }
 
     @TaskAction void compile() {

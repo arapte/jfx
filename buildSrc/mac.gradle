@@ -22,6 +22,10 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
+import org.gradle.process.ExecOperations
+import org.gradle.process.JavaExecSpec
+
+def execOps = project.services.get(ExecOperations)
 
 ext.MAC = [:]
 
@@ -71,7 +75,8 @@ setupTools("mac_tools",
         } else if (!file(defaultSdkPath).isDirectory()) {
             // Get list of all macosx sdks
             ByteArrayOutputStream results = new ByteArrayOutputStream();
-            def xcodeBuildResult = exec {
+            // def xcodeBuildResult = exec {
+            def xcodeBuildResult = execOps.exec { ExecSpec spec ->
                 commandLine("xcodebuild", "-version", "-showsdks");
                 setStandardOutput(results);
                 ignoreExitValue(true);
@@ -91,14 +96,16 @@ setupTools("mac_tools",
                 }
 
                 results = new ByteArrayOutputStream();
-                exec {
+                // exec {
+                execOps.exec { ExecSpec spec ->
                     commandLine("xcodebuild", "-version", "-sdk", sdk, "Path");
                     setStandardOutput(results);
                 }
             } else {
                 // try with command line developer tools
                 results = new ByteArrayOutputStream();
-                exec {
+                // exec {
+                execOps.exec { ExecSpec spec ->
                     commandLine("xcrun", "--show-sdk-path");
                     setStandardOutput(results);
                 }
@@ -178,7 +185,8 @@ if (hasProperty('toolchainDir')) {
 } else {
     toolchainDir = ""
     ByteArrayOutputStream path = new ByteArrayOutputStream();
-    exec {
+    // exec {
+    execOps.exec { ExecSpec spec ->
         // xcrun -f --sdk macosx metal
         commandLine("xcrun", "-f", "--sdk", "macosx", "metal");
         setStandardOutput(path);
@@ -187,7 +195,8 @@ if (hasProperty('toolchainDir')) {
     metalCompiler = path.toString().trim();
 
     path = new ByteArrayOutputStream();
-    exec {
+    // exec {
+    execOps.exec { ExecSpec spec ->
         // xcrun -f --sdk macosx metallib
         commandLine("xcrun", "-f", "--sdk", "macosx", "metallib");
         setStandardOutput(path);
