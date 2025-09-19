@@ -879,6 +879,7 @@ void fetchExternalTools(String configName, List packages, File destdir, boolean 
                     if (IS_LINUX || IS_MAC) {
                         // use native tar to support symlinks
                         pkgdir.mkdirs()
+                        def execOps = project.services.get(ExecOperations)
                         // exec {
                         execOps.exec { ExecSpec spec ->
                             workingDir pkgdir
