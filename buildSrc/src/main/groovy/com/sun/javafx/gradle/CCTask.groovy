@@ -98,7 +98,7 @@ class CCTask extends NativeCompileTask {
             // used for any cc task which isn't going to be followed by a
             // link task
             if (linkerOptions != null && !linkerOptions.isEmpty()) {
-                spec.args(linkerOptions)
+                spec.args(linkerOptions);
             }
 
             if (project.IS_WINDOWS){

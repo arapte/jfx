@@ -101,8 +101,8 @@ class JavaHeaderTask extends DefaultTask {
         }
         // Execute javah
         execOperations.exec { ExecSpec spec ->
-            spec.commandLine("$project.JAVAH", "-d", "$output", "-classpath", "${classpath.asPath}")
-            spec.args(classNames)
+            spec.commandLine("$project.JAVAH", "-d", "$output", "-classpath", "${classpath.asPath}");
+            spec.args(classNames);
         }
     }
 }

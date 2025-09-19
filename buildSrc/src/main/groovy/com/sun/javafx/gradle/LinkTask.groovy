@@ -43,7 +43,7 @@ class LinkTask extends DefaultTask {
 
     @Inject
     LinkTask(ExecOperations execOperations) {
-        this.execOperations = execOperations
+        this.execOperations = execOperations;
     }
 
     @TaskAction void compile() {

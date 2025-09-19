@@ -51,11 +51,11 @@ class NativeCompileTask extends DefaultTask {
     @InputFiles List<File> allFiles = [];
     private final PatternFilterable patternSet = new PatternSet();
 
-    private final ExecOperations execOperations
+    private final ExecOperations execOperations;
 
     @Inject
     NativeCompileTask(ExecOperations execOperations) {
-        this.execOperations = execOperations
+        this.execOperations = execOperations;
     }
 
     public NativeCompileTask source(Object... sources) {
@@ -95,7 +95,7 @@ class NativeCompileTask extends DefaultTask {
      * Replacement for project.exec – subclasses should call this.
      */
     protected void execCompile(Action<ExecSpec> action) {
-        execOperations.exec(action)
+        execOperations.exec(action);
     }
 
     @TaskAction void compile() {
