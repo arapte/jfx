@@ -31,6 +31,7 @@
 @implementation GlassLayerMTL
 
 - (id) init:(long)mtlCommandQueuePtr
+     isVsyncEnabled:(BOOL)isVsyncEnabled
        withIsSwPipe:(BOOL)isSwPipe
 {
     self = [super init];
@@ -47,7 +48,7 @@
 
     self.pixelFormat = MTLPixelFormatBGRA8Unorm;
     self.framebufferOnly = NO;
-    self.displaySyncEnabled = NO; // to support FPS faster than 60fps (-Djavafx.animation.fullspeed=true)
+    self.displaySyncEnabled = isVsyncEnabled;
     self.opaque = NO; //to support shaped window
 
     if (!isSwPipe) {
