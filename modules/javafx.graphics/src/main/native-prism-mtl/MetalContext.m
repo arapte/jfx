@@ -39,6 +39,7 @@
 #import "MetalMeshView.h"
 #import "MetalPhongMaterial.h"
 #import "com_sun_prism_mtl_MTLContext.h"
+#import "com_sun_prism_mtl_MTLPipeline.h"
 
 @implementation MetalContext
 
@@ -47,6 +48,29 @@
     self = [super init];
     if (self) {
         device = MTLCreateSystemDefaultDevice();
+
+        NSLog(@"Name: %@", device.name);
+        NSLog(@"Dynamic Libraries: %d", device.supportsDynamicLibraries); // for MTLDynamicLibrary not needed for MTLLibrary
+        NSLog(@"location: %lu", device.location); // Unspecified on VMs
+
+        NSLog(@"Registry ID: %llu", device.registryID);
+        NSLog(@"isHeadless: %@", device.isHeadless ? @"Head Less" : @"Head ful");
+        NSLog(@"Low Power: %@", device.isLowPower ? @"Low Power" : @"High Power");
+        NSLog(@"architecture: %@", device.architecture.name);
+        NSLog(@"isRemovable: %@", device.isRemovable ? @"Removable" : @"Not-Removable");
+        NSLog(@"Unified Memory: %d", device.hasUnifiedMemory);
+        NSLog(@"Max Buffer Length: %lu", device.maxBufferLength);
+        NSLog(@"Recommended Working Set: %llu", device.recommendedMaxWorkingSetSize);
+        NSLog(@"Current Allocated Size: %lu", device.currentAllocatedSize);
+        NSLog(@"Max Threadgroup Memory: %lu", device.maxThreadgroupMemoryLength);
+        NSLog(@"maxThreadsPerThreadgroup: %lu, %lu, %lu", device.maxThreadsPerThreadgroup.width,
+            device.maxThreadsPerThreadgroup.height, device.maxThreadsPerThreadgroup.depth);
+        NSLog(@"sparseTileSizeInBytes: %lu", device.sparseTileSizeInBytes);
+
+        NSLog(@"supportsFunctionPointers: %d", device.supportsFunctionPointers);
+        NSLog(@"Ray Tracing: %d", device.supportsRaytracing);
+        NSLog(@"supportsPullModelInterpolation: %d", device.supportsPullModelInterpolation);
+        NSLog(@"rasterOrderGroupsSupported: %d", device.rasterOrderGroupsSupported);
 
         currentRingBufferIndex = 0;
         ringBufferSemaphore = dispatch_semaphore_create(0);
@@ -1552,4 +1576,141 @@ JNIEXPORT void JNICALL Java_com_sun_prism_mtl_MTLResourceFactory_nReleaseTexture
     MetalTexture* pTex = (MetalTexture*)jlong_to_ptr(pTexture);
     [pTex release];
     pTex = nil;
+}
+
+
+// MTLPipeline methods
+
+#import <Metal/Metal.h>
+
+void PrintSupportedGPUFamilies(id<MTLDevice> device)
+{
+    NSLog(@"==============================");
+    NSLog(@"GPU: %@", device.name);
+    NSLog(@"==============================");
+
+#define CHECK_FAMILY(fam) \
+    do { \
+        if (@available(macOS 11.0, *)) { \
+            BOOL supported = [device supportsFamily:fam]; \
+            NSLog(@"%-30s : %@", #fam, supported ? @"YES" : @"NO"); \
+        } \
+    } while (0)
+
+    if (@available(macOS 11.0, *)) {
+        CHECK_FAMILY(MTLGPUFamilyApple1);
+        CHECK_FAMILY(MTLGPUFamilyApple2);
+        CHECK_FAMILY(MTLGPUFamilyApple3);
+        CHECK_FAMILY(MTLGPUFamilyApple4);
+        CHECK_FAMILY(MTLGPUFamilyApple5);
+        CHECK_FAMILY(MTLGPUFamilyApple6);
+        CHECK_FAMILY(MTLGPUFamilyApple7);
+        CHECK_FAMILY(MTLGPUFamilyApple8);
+        CHECK_FAMILY(MTLGPUFamilyApple9);
+
+        CHECK_FAMILY(MTLGPUFamilyMac1);
+        CHECK_FAMILY(MTLGPUFamilyMac2);
+
+        CHECK_FAMILY(MTLGPUFamilyCommon1);
+        CHECK_FAMILY(MTLGPUFamilyCommon2);
+        CHECK_FAMILY(MTLGPUFamilyCommon3);
+
+        CHECK_FAMILY(MTLGPUFamilyMetal3);
+    }
+
+#undef CHECK_FAMILY
+
+    NSLog(@"==============================");
+}
+
+#import <Metal/Metal.h>
+
+void PrintSupportedFeatureSets(id<MTLDevice> device)
+{
+    NSLog(@"==========================================");
+    NSLog(@"GPU: %@", device.name);
+    NSLog(@"==========================================");
+
+#define CHECK_FEATURE(fs) \
+    do { \
+        BOOL supported = [device supportsFeatureSet:fs]; \
+        NSLog(@"%-45s : %@", #fs, supported ? @"YES" : @"NO"); \
+    } while (0)
+
+    /* -------- GPUFamily1 v1 -------- */
+CHECK_FEATURE(MTLFeatureSet_macOS_GPUFamily1_v1);
+CHECK_FEATURE(MTLFeatureSet_OSX_GPUFamily1_v1);
+
+
+CHECK_FEATURE(MTLFeatureSet_macOS_GPUFamily1_v2);
+CHECK_FEATURE(MTLFeatureSet_OSX_GPUFamily1_v2);
+
+
+CHECK_FEATURE(MTLFeatureSet_macOS_ReadWriteTextureTier2);
+CHECK_FEATURE(MTLFeatureSet_OSX_ReadWriteTextureTier2);
+
+
+CHECK_FEATURE(MTLFeatureSet_macOS_GPUFamily1_v3);
+CHECK_FEATURE(MTLFeatureSet_macOS_GPUFamily1_v4);
+
+
+CHECK_FEATURE(MTLFeatureSet_macOS_GPUFamily2_v1);
+
+#undef CHECK_FEATURE
+
+    NSLog(@"==========================================");
+}
+
+/*
+ * Class:     com_sun_prism_mtl_MTLPipeline
+ * Method:    nIsRunningInVM
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_sun_prism_mtl_MTLPipeline_nIsRunningInVM
+    (JNIEnv *env, jclass jClass)
+{
+    bool isRunningInVM = true;
+    id<MTLDevice> device = MTLCreateSystemDefaultDevice();
+    PrintSupportedGPUFamilies(device);
+    PrintSupportedFeatureSets(device);
+
+    NSString *name = device.name.lowercaseString;
+
+    if (device.argumentBuffersSupport == MTLArgumentBuffersTier1)
+    {
+        isRunningInVM = true;
+        NSLog(@"---->>>> tier 1 argument buffer supported <<<<----");
+    }
+
+    if (device.argumentBuffersSupport == MTLArgumentBuffersTier2)
+    {
+        isRunningInVM = false;
+        NSLog(@"---->>>> tier 2 argument buffer supported <<<<----");
+    }
+
+    if ([name containsString:@"virtual"]) {
+        isRunningInVM = true;
+        NSLog(@"---->>>> device name contains virtual <<<<----");
+    }
+
+
+    BOOL isMetal2 = [device supportsFamily:MTLGPUFamilyMac2];
+    NSLog(@"---->>>> Metal 2 supported: %@ <<<<----", isMetal2 ? @"YES" : @"NO");
+
+    BOOL isMetal3 = [device supportsFamily:MTLGPUFamilyMetal3];
+    NSLog(@"---->>>> Metal 3 supported: %@ <<<<----", isMetal3 ? @"YES" : @"NO");
+
+    BOOL looksLikeMetal2 = device.supportsDynamicLibraries ||
+                        device.supportsFunctionPointers ||
+                        device.rasterOrderGroupsSupported;
+
+    NSLog(@"---->>>> Metal 2+ supported: %@ <<<<----", looksLikeMetal2 ? @"YES" : @"NO");
+
+
+    BOOL legacyMetal = [device supportsFeatureSet:MTLFeatureSet_macOS_GPUFamily1_v1];
+
+    NSLog(@"---->>>> Legacy Metal (1.x): %@ <<<<----", legacyMetal ? @"YES" : @"NO");
+
+    return false;
+    // return isRunningInVM;
 }

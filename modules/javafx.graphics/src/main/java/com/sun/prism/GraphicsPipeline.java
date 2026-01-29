@@ -226,6 +226,7 @@ public abstract class GraphicsPipeline {
                 Method m = klass.getMethod("getInstance", (Class[])null);
                 GraphicsPipeline newPipeline = (GraphicsPipeline)
                     m.invoke(null, (Object[])null);
+                System.err.println("---->>> GraphicsPipeline.createPipeline(): newPipeline= " + newPipeline);
                 if (newPipeline != null && newPipeline.init()) {
                     if (PrismSettings.verbose) {
                         System.out.println("Initialized prism pipeline: " +

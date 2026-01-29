@@ -37,20 +37,30 @@ import java.util.List;
 
 public class MTLPipeline extends GraphicsPipeline {
 
+    private static boolean mtlEnabled;
     private static MTLPipeline theInstance;
     private static MTLResourceFactory mtlResourceFactory;
 
-    static {
-        String libName = "prism_mtl";
+    private static native boolean nIsRunningInVM();
 
-        if (PrismSettings.verbose) {
-            System.err.println("Loading native metal library, named: " + libName);
-        }
-        NativeLibLoader.loadLibrary(libName);
-        if (PrismSettings.verbose) {
-            System.err.println("Succeeded: Loading native metal library.");
-        }
+    static {
         theInstance = new MTLPipeline();
+
+        // if (mtlEnabled) {
+            String libName = "prism_mtl";
+
+            if (PrismSettings.verbose) {
+                System.err.println("Loading native metal library, named: " + libName);
+            }
+            NativeLibLoader.loadLibrary(libName);
+            if (PrismSettings.verbose) {
+                System.err.println("Succeeded: Loading native metal library.");
+            }
+        // } else {
+        //     if (PrismSettings.verbose) {
+        //         System.err.println("Metal pipeline not enabled on VM.");
+        //     }
+        // }
     }
 
     private MTLPipeline() {}
@@ -61,6 +71,11 @@ public class MTLPipeline extends GraphicsPipeline {
 
     @Override
     public boolean init() {
+        mtlEnabled = !MTLPipeline.nIsRunningInVM();
+        if (!mtlEnabled) {
+            theInstance.dispose();
+            return false;
+        }
         Map<String, Long> devDetails = new HashMap<>();
         devDetails.put("isVsyncEnabled", PrismSettings.isVsyncEnabled ? 1L : 0L);
         setDeviceDetails(devDetails);

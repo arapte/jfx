@@ -65,6 +65,7 @@ public class ES2Pipeline extends GraphicsPipeline {
         glFactory = GLFactory.getFactory();
 
         creator = Thread.currentThread();
+        System.err.println("-->>>> ES2Pipeline static block : glFactory = " + glFactory);
 
         if (glFactory != null) {
             es2Enabled = glFactory.initialize(PrismSettings.class,

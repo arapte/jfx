@@ -66,6 +66,8 @@ void *createPixelFormat(jint *ivalues) {
 
     NSOpenGLPixelFormat *fmt = [[NSOpenGLPixelFormat alloc] initWithAttributes : attribs];
 
+    NSLog(@"createPixelFormat: fmt: %@", fmt);
+
     [pool release];
     return fmt;
 }

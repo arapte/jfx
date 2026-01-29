@@ -71,6 +71,8 @@ void printAndReleaseResources(jlong pf, jlong ctx, const char *message) {
 JNIEXPORT jlong JNICALL Java_com_sun_prism_es2_MacGLFactory_nInitialize
 (JNIEnv *env, jclass class, jintArray attrArr) {
 
+    fprintf(stderr, "%s\n", "MacGLFactory_nInitialize: 1"); fflush(stderr);
+
     jint *attrs;
     jlong pixelFormat;
     jlong context = 0;
@@ -87,6 +89,7 @@ JNIEXPORT jlong JNICALL Java_com_sun_prism_es2_MacGLFactory_nInitialize
     const char *glExtensions;
 
     if (attrArr == NULL) {
+        fprintf(stderr, "%s\n", "MacGLFactory_nInitialize: 2"); fflush(stderr);
         return 0;
     }
 
@@ -97,6 +100,7 @@ JNIEXPORT jlong JNICALL Java_com_sun_prism_es2_MacGLFactory_nInitialize
     if (pixelFormat == 0) {
         // System is incapable of es2 support
         printAndReleaseResources(0, 0, NULL);
+        fprintf(stderr, "%s\n", "MacGLFactory_nInitialize: 3"); fflush(stderr);
         return 0;
     }
 
@@ -106,6 +110,7 @@ JNIEXPORT jlong JNICALL Java_com_sun_prism_es2_MacGLFactory_nInitialize
     if (context == 0) {
         printAndReleaseResources(pixelFormat, 0,
                 "Fail in createContext");
+        fprintf(stderr, "%s\n", "MacGLFactory_nInitialize: 4"); fflush(stderr);
         return 0;
     }
 
@@ -113,6 +118,7 @@ JNIEXPORT jlong JNICALL Java_com_sun_prism_es2_MacGLFactory_nInitialize
     if (!result) {
         printAndReleaseResources(pixelFormat, context,
                 "Fail in CGLSetCurrentContext");
+        fprintf(stderr, "%s\n", "MacGLFactory_nInitialize: 5"); fflush(stderr);
         return 0;
     }
 
@@ -121,6 +127,7 @@ JNIEXPORT jlong JNICALL Java_com_sun_prism_es2_MacGLFactory_nInitialize
     if (glVersion == NULL) {
         printAndReleaseResources(pixelFormat, context,
                 "glVersion == null");
+        fprintf(stderr, "%s\n", "MacGLFactory_nInitialize: 6"); fflush(stderr);
         return 0;
     }
 
@@ -147,6 +154,7 @@ JNIEXPORT jlong JNICALL Java_com_sun_prism_es2_MacGLFactory_nInitialize
                 "Prism-ES2 Error : GL_VERSION (major.minor) = %d.%d\n",
                 versionNumbers[0], versionNumbers[1]);
         printAndReleaseResources(pixelFormat, context, NULL);
+        fprintf(stderr, "%s\n", "MacGLFactory_nInitialize: 7"); fflush(stderr);
         return 0;
     }
 
@@ -164,6 +172,7 @@ JNIEXPORT jlong JNICALL Java_com_sun_prism_es2_MacGLFactory_nInitialize
     if (glExtensions == NULL) {
         printAndReleaseResources(pixelFormat, context,
                 "Prism-ES2 Error : glExtensions == null");
+        fprintf(stderr, "%s\n", "MacGLFactory_nInitialize: 8"); fflush(stderr);
         return 0;
     }
 
@@ -172,6 +181,7 @@ JNIEXPORT jlong JNICALL Java_com_sun_prism_es2_MacGLFactory_nInitialize
     if (!isExtensionSupported(glExtensions, "GL_ARB_pixel_buffer_object")) {
         printAndReleaseResources(pixelFormat, context,
                 "GL profile isn't PS 3.0 capable");
+        fprintf(stderr, "%s\n", "MacGLFactory_nInitialize: 9"); fflush(stderr);
         return 0;
     }
 
@@ -179,6 +189,7 @@ JNIEXPORT jlong JNICALL Java_com_sun_prism_es2_MacGLFactory_nInitialize
     ctxInfo = (ContextInfo *) malloc(sizeof (ContextInfo));
     if (ctxInfo == NULL) {
         fprintf(stderr, "nInitialize: Failed in malloc\n");
+        fprintf(stderr, "%s\n", "MacGLFactory_nInitialize: 10"); fflush(stderr);
         return 0;
     }
     /* initialize the structure */
@@ -200,6 +211,7 @@ JNIEXPORT jlong JNICALL Java_com_sun_prism_es2_MacGLFactory_nInitialize
      * GLass
      */
 
+    fprintf(stderr, "%s\n", "MacGLFactory_nInitialize: 11"); fflush(stderr);
     return ptr_to_jlong(ctxInfo);
 }
 

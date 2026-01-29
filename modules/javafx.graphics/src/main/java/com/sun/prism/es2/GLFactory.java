@@ -171,7 +171,9 @@ abstract class GLFactory {
     abstract GLPixelFormat createGLPixelFormat(long nativeScreen, GLPixelFormat.Attributes attrs);
 
     boolean isGLGPUQualify() {
-        return isQualified(nativeCtxInfo);
+        boolean res = isQualified(nativeCtxInfo);
+        System.err.println("-->> GLFactory.isGLGPUQualify(): " + res);
+        return res;
     }
 
     abstract boolean initialize(Class psClass, GLPixelFormat.Attributes attrs);
