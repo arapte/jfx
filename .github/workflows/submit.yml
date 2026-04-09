@@ -237,7 +237,7 @@ jobs:
   macos_aarch64_build:
     name: macOS aarch64
     needs: validation
-    runs-on: "macos-14"
+    runs-on: "macos-15"
 
     env:
       # FIXME: read this information from a property file
