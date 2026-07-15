@@ -120,8 +120,8 @@ bool RenderThemeJava::paintWidget(
 
     int state = createWidgetState(object);
     Color bgColor = widgetIndex == JNI_EXPAND(MENU_LIST_BUTTON)
-        ? object.selectionForegroundColor()
-        : object.selectionBackgroundColor();
+        ? object.style().visitedDependentColor()
+        : object.style().visitedDependentBackgroundColor();
 
     JNIEnv* env = WTF::GetJavaEnv();
 

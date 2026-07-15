@@ -1,5 +1,7 @@
 /*
- * Copyright (C) 2025 Igalia S.L.
+ * Copyright (C) 2004, 2005, 2006, 2007, 2008 Apple Inc. All rights reserved.
+ * Copyright (C) 2006 James G. Speth (speth@end.com)
+ * Copyright (C) 2006 Samuel Weinig (sam.weinig@gmail.com)
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -25,11 +27,9 @@
 
 #pragma once
 
-#if USE(SKIA)
-
-#include "HbUniquePtr.h"
+#if USE(SKIA) && !OS(ANDROID) && !PLATFORM(WIN)
 WTF_IGNORE_WARNINGS_IN_THIRD_PARTY_CODE_BEGIN
-#include <skia/core/SkFont.h>
+#include <skia/core/SkFontStyle.h>
 #include <skia/core/SkTypeface.h>
 WTF_IGNORE_WARNINGS_IN_THIRD_PARTY_CODE_END
 #include <wtf/HashMap.h>
@@ -37,32 +37,17 @@ WTF_IGNORE_WARNINGS_IN_THIRD_PARTY_CODE_END
 
 namespace WebCore {
 
-class FontPlatformData;
+class FEDropShadow;
 
-class SkiaHarfBuzzFont final : public RefCounted<SkiaHarfBuzzFont> {
+class FEDropShadowSkiaApplier final : public FilterEffectConcreteApplier<FEDropShadow> {
+    WTF_MAKE_TZONE_ALLOCATED(FEDropShadowSkiaApplier);
+    using Base = FilterEffectConcreteApplier<FEDropShadow>;
+
 public:
-    static Ref<SkiaHarfBuzzFont> getOrCreate(SkTypeface&);
-
-    hb_font_t* scaledFont(const FontPlatformData&);
-
-    std::optional<hb_codepoint_t> glyph(hb_codepoint_t, std::optional<hb_codepoint_t> variation = std::nullopt);
-    hb_position_t glyphWidth(hb_codepoint_t);
-    void glyphWidths(unsigned count, const hb_codepoint_t* glyphs, unsigned glyphStride, hb_position_t* advances, unsigned advanceStride);
-    void glyphExtents(hb_codepoint_t, hb_glyph_extents_t*);
-
-    bool isColorBitmapFont() const { return m_isColorBitmapFont; }
-
-    ~SkiaHarfBuzzFont();
+    using Base::Base;
 
 private:
-    friend class SkiaHarfBuzzFontCache;
-
-    explicit SkiaHarfBuzzFont(SkTypeface&);
-
-    SkTypefaceID m_uniqueID { 0 };
-    HbUniquePtr<hb_font_t> m_font;
-    SkFont m_scaledFont;
-    bool m_isColorBitmapFont { false };
+    bool apply(const Filter&, std::span<const Ref<FilterImage>>, FilterImage&) const final;
 };
 
 } // namespace WebCore

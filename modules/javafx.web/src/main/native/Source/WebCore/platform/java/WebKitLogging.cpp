@@ -25,25 +25,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "WebKitLogging.h"
 
-#pragma once
+#if !LOG_DISABLED || !RELEASE_LOG_DISABLED
 
-#include <wtf/Forward.h>
-#include <wtf/RetainPtr.h>
+#define DEFINE_WEBKIT_LOG_CHANNEL(name) DEFINE_LOG_CHANNEL(name, LOG_CHANNEL_WEBKIT_SUBSYSTEM)
+WEBKIT_LOG_CHANNELS(DEFINE_WEBKIT_LOG_CHANNEL)
 
-typedef struct _CFURLRequest* CFMutableURLRequestRef;
-typedef struct __CFReadStream* CFReadStreamRef;
-typedef const struct __CFString* CFStringRef;
+static WTFLogChannel* logChannels[] = {
+    WEBKIT_LOG_CHANNELS(LOG_CHANNEL_ADDRESS)
+};
 
-namespace WebCore {
+static const size_t logChannelCount = sizeof(logChannels) / sizeof(logChannels[0]);
 
-class FormData;
+void WebKitInitializeLogChannelsIfNecessary()
+{
+    static bool haveInitializedLoggingChannels = false;
+    if (haveInitializedLoggingChannels)
+        return;
+    haveInitializedLoggingChannels = true;
 
-void setHTTPBody(CFMutableURLRequestRef, const RefPtr<FormData>&);
-RetainPtr<CFReadStreamRef> createHTTPBodyCFReadStream(FormData&);
+    // FIXME: Get the log channel string from somewhere so people don't have to hardcode it here.
+    WTFInitializeLogChannelStatesFromString(logChannels, logChannelCount, "");
+}
 
-FormData* httpBodyFromStream(CFReadStreamRef);
-
-CFStringRef formDataStreamLengthPropertyNameSingleton();
-
-} // namespace WebCore
+#endif // !LOG_DISABLED || !RELEASE_LOG_DISABLED

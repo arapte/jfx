@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2017-2022 Apple Inc. All rights reserved.
+ * Copyright (C) 2004, 2006, 2008 Apple Inc.  All rights reserved.
+ * Copyright (C) 2006 Samuel Weinig <sam.weinig@gmail.com>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,15 +31,24 @@
 
 namespace WebCore {
 
-class CoreAudioCaptureSourceFactoryIOS final : public CoreAudioCaptureSourceFactory  {
+class Node;
+
+class JavaNodeFilterCondition : public NodeFilterCondition {
 public:
-    static Ref<CoreAudioCaptureSourceFactoryIOS> create();
-    ~CoreAudioCaptureSourceFactoryIOS();
+    static Ref<ObjCNodeFilterCondition> create(id <DOMNodeFilter> filter)
+    {
+        return adoptRef(*new JavaNodeFilterCondition(filter));
+    }
+
+    short acceptNode(Node*) const override;
 
 private:
-    CoreAudioCaptureSourceFactoryIOS();
+    JavaNodeFilterCondition(id <DOMNodeFilter> filter)
+        : m_filter(filter)
+    {
+    }
 
-    RetainPtr<WebCoreAudioCaptureSourceIOSListener> m_listener;
+    RetainPtr<id <DOMNodeFilter> > m_filter;
 };
 
 } // namespace WebCore

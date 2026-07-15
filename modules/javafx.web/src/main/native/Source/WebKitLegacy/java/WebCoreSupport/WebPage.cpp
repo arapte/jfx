@@ -36,6 +36,7 @@
 #include "ContextMenuJava.h"
 #include "DragClientJava.h"
 #include "EditorClientJava.h"
+#include "GarbageCollectionController.h"
 #include "FrameLoaderClientJava.h"
 #include "InspectorClientJava.h"
 #include "PageStorageSessionProvider.h"
@@ -752,7 +753,6 @@ int WebPage::beginPrinting(float width, float height)
         return 0;
     frame->document()->updateLayout();
 
-    ASSERT(!m_printContext);
     m_printContext->begin(width, height);
     m_printContext->computePageRects(FloatRect(0, 0, width, height), 0, 0, 1, height);
     return m_printContext->pageCount();
@@ -765,7 +765,6 @@ void WebPage::endPrinting()
         return;
 
     m_printContext->end();
-    m_printContext = nullptr;
 }
 
 void WebPage::print(GraphicsContext& gc, int pageIndex, float pageWidth)
@@ -2617,7 +2616,7 @@ JNIEXPORT jint JNICALL Java_com_sun_webkit_WebPage_twkWorkerThreadCount
 JNIEXPORT void JNICALL Java_com_sun_webkit_WebPage_twkDoJSCGarbageCollection
   (JNIEnv*, jclass)
 {
-   // GCController::singleton().garbageCollectNow(); // it has been removed // recheck
+   GarbageCollectionController::singleton().garbageCollectNow();
 }
 
 }

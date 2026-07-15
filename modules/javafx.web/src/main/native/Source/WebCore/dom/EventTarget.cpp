@@ -440,17 +440,6 @@ void EventTarget::removeAllEventListeners()
 
     auto* data = eventTargetData();
     if (data && !data->eventListenerMap.isEmpty()) {
-#if PLATFORM(JAVA) // remove javaEventListener  before map clear
-        for (const auto& eventType : data->eventListenerMap.eventTypes()) {
-            if (auto* listeners = data->eventListenerMap.find(eventType)) {
-                for (auto& registeredListener : *listeners) {
-                    auto& listener = registeredListener->callback();
-                    if (listener.isJavaEventListener())
-                        EventListenerManager::get_instance().unregisterListener(static_cast<JavaEventListener*>(&listener));
-                }
-            }
-        }
-#endif
         data->eventListenerMap.clear();
         eventListenersDidChange();
     }
