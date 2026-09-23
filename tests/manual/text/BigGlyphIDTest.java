@@ -69,7 +69,7 @@ public class BigGlyphIDTest extends Application {
         txt.setFont(font);
         box.getChildren().add(txt);
 
-        Image img = new Image("BigGlyphIDTest_Expected.png");
+        Image img = new Image(getClass().getResourceAsStream("BigGlyphIDTest_Expected.png"));
         ImageView iv = new ImageView();
         iv.setImage(img);
         box.getChildren().add(iv);
