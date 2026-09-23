@@ -60,7 +60,7 @@
  * The parser tries to always have that amount of input ready.
  * One of the point is providing context when reporting errors.
  */
-#define INPUT_CHUNK     250
+#define INPUT_CHUNK	250
 
 struct _xmlAttrHashBucket {
     int index;
@@ -178,5 +178,13 @@ xmlSaturatedAddSizeT(unsigned long *dst, size_t val) {
     else
         *dst += val;
 }
+
+/**
+ * xmlAttrNormalize helper functions
+ * https://www.w3.org/TR/REC-xml/#AVNormalize
+ */
+
+XML_HIDDEN xmlChar * xmlAttrNormalize(xmlChar *src);
+XML_HIDDEN xmlChar * xmlAttrNormalizeSpace(const xmlChar *src, xmlChar *dst);
 
 #endif /* XML_PARSER_H_PRIVATE__ */

@@ -135,11 +135,11 @@ xmlDictAddString(xmlDictPtr dict, const xmlChar *name, unsigned int namelen) {
 
     pool = dict->strings;
     while (pool != NULL) {
-        if ((size_t)(pool->end - pool->free) > namelen)
-            goto found_pool;
-        if (pool->size > size) size = pool->size;
+	if ((size_t)(pool->end - pool->free) > namelen)
+	    goto found_pool;
+	if (pool->size > size) size = pool->size;
         limit += pool->size;
-        pool = pool->next;
+	pool = pool->next;
     }
     /*
      * Not found, need to allocate
@@ -163,15 +163,15 @@ xmlDictAddString(xmlDictPtr dict, const xmlChar *name, unsigned int namelen) {
             else
                 return(NULL);
         }
-        pool = (xmlDictStringsPtr) xmlMalloc(sizeof(xmlDictStrings) + size);
-        if (pool == NULL)
-            return(NULL);
-        pool->size = size;
-        pool->nbStrings = 0;
-        pool->free = &pool->array[0];
-        pool->end = &pool->array[size];
-        pool->next = dict->strings;
-        dict->strings = pool;
+	pool = (xmlDictStringsPtr) xmlMalloc(sizeof(xmlDictStrings) + size);
+	if (pool == NULL)
+	    return(NULL);
+	pool->size = size;
+	pool->nbStrings = 0;
+	pool->free = &pool->array[0];
+	pool->end = &pool->array[size];
+	pool->next = dict->strings;
+	dict->strings = pool;
     }
 found_pool:
     ret = pool->free;
@@ -204,11 +204,11 @@ xmlDictAddQString(xmlDictPtr dict, const xmlChar *prefix, unsigned int plen,
 
     pool = dict->strings;
     while (pool != NULL) {
-        if ((size_t)(pool->end - pool->free) > namelen + plen + 1)
-            goto found_pool;
-        if (pool->size > size) size = pool->size;
+	if ((size_t)(pool->end - pool->free) > namelen + plen + 1)
+	    goto found_pool;
+	if (pool->size > size) size = pool->size;
         limit += pool->size;
-        pool = pool->next;
+	pool = pool->next;
     }
     /*
      * Not found, need to allocate
@@ -218,19 +218,30 @@ xmlDictAddQString(xmlDictPtr dict, const xmlChar *prefix, unsigned int plen,
             return(NULL);
         }
 
-        if (size == 0) size = 1000;
-        else size *= 4; /* exponential growth */
-        if (size < 4 * (namelen + plen + 1))
-            size = 4 * (namelen + plen + 1); /* just in case ! */
-        pool = (xmlDictStringsPtr) xmlMalloc(sizeof(xmlDictStrings) + size);
-        if (pool == NULL)
-            return(NULL);
-        pool->size = size;
-        pool->nbStrings = 0;
-        pool->free = &pool->array[0];
-        pool->end = &pool->array[size];
-        pool->next = dict->strings;
-        dict->strings = pool;
+        if (size == 0) {
+            size = 1000;
+        } else {
+            if (size < (SIZE_MAX - sizeof(xmlDictStrings)) / 4)
+                size *= 4; /* exponential growth */
+            else
+                size = SIZE_MAX - sizeof(xmlDictStrings);
+        }
+        if (size / 4 < namelen + plen + 1) {
+            if ((size_t) namelen + plen + 1 <
+                    (SIZE_MAX - sizeof(xmlDictStrings)) / 4)
+                size = 4 * ((size_t) namelen + plen + 1); /* just in case ! */
+            else
+                return(NULL);
+        }
+	pool = (xmlDictStringsPtr) xmlMalloc(sizeof(xmlDictStrings) + size);
+	if (pool == NULL)
+	    return(NULL);
+	pool->size = size;
+	pool->nbStrings = 0;
+	pool->free = &pool->array[0];
+	pool->end = &pool->array[size];
+	pool->next = dict->strings;
+	dict->strings = pool;
     }
 found_pool:
     ret = pool->free;
@@ -289,7 +300,7 @@ xmlDictCreateSub(xmlDict *sub) {
     if ((dict != NULL) && (sub != NULL)) {
         dict->seed = sub->seed;
         dict->subdict = sub;
-        xmlDictReference(dict->subdict);
+	xmlDictReference(dict->subdict);
     }
     return(dict);
 }
@@ -320,7 +331,7 @@ xmlDictFree(xmlDict *dict) {
     xmlDictStringsPtr pool, nextp;
 
     if (dict == NULL)
-        return;
+	return;
 
     /* decrement the counter, it may be shared by a parser and docs */
     xmlMutexLock(&xmlDictMutex);
@@ -337,13 +348,13 @@ xmlDictFree(xmlDict *dict) {
     }
 
     if (dict->table) {
-        xmlFree(dict->table);
+	xmlFree(dict->table);
     }
     pool = dict->strings;
     while (pool != NULL) {
         nextp = pool->next;
-        xmlFree(pool);
-        pool = nextp;
+	xmlFree(pool);
+	pool = nextp;
     }
     xmlFree(dict);
 }
@@ -361,12 +372,12 @@ xmlDictOwns(xmlDict *dict, const xmlChar *str) {
     xmlDictStringsPtr pool;
 
     if ((dict == NULL) || (str == NULL))
-        return(-1);
+	return(-1);
     pool = dict->strings;
     while (pool != NULL) {
         if ((str >= &pool->array[0]) && (str <= pool->free))
-            return(1);
-        pool = pool->next;
+	    return(1);
+	pool = pool->next;
     }
     if (dict->subdict)
         return(xmlDictOwns(dict->subdict, str));
@@ -383,7 +394,7 @@ xmlDictOwns(xmlDict *dict, const xmlChar *str) {
 int
 xmlDictSize(xmlDict *dict) {
     if (dict == NULL)
-        return(-1);
+	return(-1);
     if (dict->subdict)
         return(dict->nbElems + dict->subdict->nbElems);
     return(dict->nbElems);
@@ -402,7 +413,7 @@ xmlDictSetLimit(xmlDict *dict, size_t limit) {
     size_t ret;
 
     if (dict == NULL)
-        return(0);
+	return(0);
     ret = dict->limit;
     dict->limit = limit;
     return(ret);
@@ -421,11 +432,11 @@ xmlDictGetUsage(xmlDict *dict) {
     size_t limit = 0;
 
     if (dict == NULL)
-        return(0);
+	return(0);
     pool = dict->strings;
     while (pool != NULL) {
         limit += pool->size;
-        pool = pool->next;
+	pool = pool->next;
     }
     return(limit);
 }
@@ -672,7 +683,7 @@ xmlDictLookupInternal(xmlDict *dict, const xmlChar *prefix,
     int found = 0;
 
     if ((dict == NULL) || (name == NULL))
-        return(NULL);
+	return(NULL);
 
     maxLen = (maybeLen < 0) ? SIZE_MAX : (size_t) maybeLen;
 
