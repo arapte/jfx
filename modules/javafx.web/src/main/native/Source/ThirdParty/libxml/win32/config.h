@@ -1,35 +1,20 @@
-/* Define to 1 if you have the declaration of 'getentropy', and to 0 if you
-   don't. */
-#define HAVE_DECL_GETENTROPY 0
+#ifndef __LIBXML_WIN32_CONFIG__
+#define __LIBXML_WIN32_CONFIG__
 
-/* Define to 1 if you have the declaration of 'glob', and to 0 if you don't.
-   */
-#define HAVE_DECL_GLOB 0
 
-/* Define to 1 if you have the declaration of 'mmap', and to 0 if you don't.
-   */
-#define HAVE_DECL_MMAP 0
+#if defined(__MINGW32__) || (defined(_MSC_VER) && _MSC_VER >= 1600)
+#define HAVE_STDINT_H
+#endif
 
-/* Define if __attribute__((destructor)) is accepted */
-/* #undef HAVE_FUNC_ATTRIBUTE_DESTRUCTOR */
+#if defined(_MSC_VER)
+#if _MSC_VER < 1900
+#define snprintf _snprintf
+#endif
+#if _MSC_VER < 1500
+#define vsnprintf(b,c,f,a) _vsnprintf(b,c,f,a)
+#endif
+#endif
 
-/* Have dlopen based dso */
-/* #undef HAVE_DLOPEN */
+#define XML_SYSCONFDIR "/etc"
+#endif /* __LIBXML_WIN32_CONFIG__ */
 
-/* Define if history library is there (-lhistory) */
-/* #undef HAVE_LIBHISTORY */
-
-/* Define if readline library is there (-lreadline) */
-/* #undef HAVE_LIBREADLINE */
-
-/* Have shl_load based dso */
-/* #undef HAVE_SHLLOAD */
-
-/* Define to 1 if you have the <stdint.h> header file. */
-/* #undef HAVE_STDINT_H */
-
-/* System configuration directory (/etc) */
-#define XML_SYSCONFDIR "C:/Program Files (x86)/libxml2/etc"
-
-/* TLS specifier */
-/* #undef XML_THREAD_LOCAL */

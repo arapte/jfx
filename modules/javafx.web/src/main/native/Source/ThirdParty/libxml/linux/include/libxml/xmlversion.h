@@ -209,7 +209,7 @@
 #define LIBXML_AUTOMATA_ENABLED
 #endif
 
-#if 1
+#if 0
 /**
  * Whether the RelaxNG validation interfaces are compiled in
  */
@@ -251,5 +251,4 @@
 #include <libxml/xmlexports.h>
 
 #endif
-
 
